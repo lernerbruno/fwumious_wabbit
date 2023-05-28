@@ -307,6 +307,7 @@ impl <L:OptimizerTrait + 'static> BlockTrait for BlockFFM<L>
     }
     
     fn forward(&self, further_blocks: &[Box<dyn BlockTrait>], wsum_input: f32, fb: &feature_buffer::FeatureBuffer) -> f32 {
+    // TODO: how do we make sure it will only run on eval?
         let mut wsum:f32 = 0.0;
         unsafe {
             let ffm_weights = &self.weights;
@@ -381,6 +382,7 @@ impl <L:OptimizerTrait + 'static> BlockTrait for BlockFFM<L>
                             f1_offset_ffmk += FFMK as usize;
                             //assert_eq!(f1_offset_ffmk, f1 * field_embedding_len + f2 * FFMK as usize);
                             //assert_eq!(f2_offset_ffmk, f2 * field_embedding_len + f1 * FFMK as usize);
+                            // TODO : Here is where the magic happens, we need to skip some field interactions
                             for k in 0..FFMK {
                                 *wsumbuf.get_unchecked_mut(k as usize) += 
                                         contra_fields.get_unchecked(f1_offset_ffmk + k as usize) * 
